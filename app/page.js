@@ -2,10 +2,11 @@
 
 import { useEffect, useState } from 'react';
 
-const emptyForm = { name: '', description: '', price: '' };
+const emptyForm = { name: '', description: '', price: '', category_id: '' };
 
 export default function Home() {
   const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [form, setForm] = useState(emptyForm);
   const [editingId, setEditingId] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -27,8 +28,20 @@ export default function Home() {
     }
   }
 
+  async function loadCategories() {
+    try {
+      const res = await fetch('/api/categories');
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Gagal memuat kategori');
+      setCategories(data);
+    } catch (err) {
+      setError(err.message);
+    }
+  }
+
   useEffect(() => {
     loadProducts();
+    loadCategories();
   }, []);
 
   function handleChange(e) {
@@ -42,6 +55,7 @@ export default function Home() {
       name: product.name,
       description: product.description || '',
       price: product.price,
+      category_id: product.category_id ? String(product.category_id) : '',
     });
   }
 
@@ -143,8 +157,36 @@ export default function Home() {
             />
           </div>
 
+          <div className="form-row">
+            <label htmlFor="category_id">Kategori</label>
+            <select
+              id="category_id"
+              name="category_id"
+              value={form.category_id}
+              onChange={handleChange}
+              required
+              disabled={categories.length === 0}
+            >
+              <option value="">Pilih kategori</option>
+              {categories.map((category) => (
+                <option key={category.id} value={category.id}>
+                  {category.name}
+                </option>
+              ))}
+            </select>
+            {categories.length === 0 && (
+              <span className="field-hint">
+                Belum ada kategori. <a href="/categories">Tambah kategori</a>
+              </span>
+            )}
+          </div>
+
           <div className="form-actions">
-            <button type="submit" className="btn-primary" disabled={saving}>
+            <button
+              type="submit"
+              className="btn-primary"
+              disabled={saving || categories.length === 0}
+            >
               {saving ? 'Menyimpan...' : editingId ? 'Update' : 'Simpan'}
             </button>
             {editingId && (
@@ -166,6 +208,7 @@ export default function Home() {
             <th>Nama</th>
             <th>Deskripsi</th>
             <th>Harga</th>
+            <th>Kategori</th>
             <th>Aksi</th>
           </tr>
         </thead>
@@ -175,6 +218,7 @@ export default function Home() {
               <td>{p.name}</td>
               <td>{p.description}</td>
               <td>Rp {Number(p.price).toLocaleString('id-ID')}</td>
+              <td>{p.category_name || '-'}</td>
               <td>
                 <button className="btn-edit" onClick={() => startEdit(p)}>
                   Edit

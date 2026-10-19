@@ -68,7 +68,8 @@ h1 {
 }
 
 .form-row input,
-.form-row textarea {
+.form-row textarea,
+.form-row select {
   padding: 8px 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -77,9 +78,16 @@ h1 {
 }
 
 .form-row input:focus,
-.form-row textarea:focus {
+.form-row textarea:focus,
+.form-row select:focus {
   outline: 2px solid #93c5fd;
   outline-offset: 1px;
+}
+
+.field-hint {
+  margin-top: 5px;
+  color: #666;
+  font-size: 13px;
 }
 
 .form-actions {

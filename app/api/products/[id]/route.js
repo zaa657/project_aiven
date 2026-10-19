@@ -5,9 +5,13 @@ import { getPool } from '@/lib/db';
 export async function GET(request, { params }) {
   try {
     const pool = getPool();
-    const [rows] = await pool.query('SELECT * FROM products WHERE id = ?', [
-      params.id,
-    ]);
+    const [rows] = await pool.query(
+      `SELECT p.*, c.name AS category_name
+       FROM products p
+       LEFT JOIN categories c ON c.id = p.category_id
+       WHERE p.id = ?`,
+      [params.id]
+    );
 
     if (rows.length === 0) {
       return NextResponse.json({ error: 'Produk tidak ditemukan' }, { status: 404 });
@@ -24,26 +28,39 @@ export async function GET(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const body = await request.json();
-    const { name, description, price } = body;
+    const { name, description, price, category_id } = body;
+    const categoryId = Number(category_id);
 
-    if (!name || price === undefined || price === '') {
+    if (
+      !name ||
+      price === undefined ||
+      price === '' ||
+      !Number.isInteger(categoryId) ||
+      categoryId <= 0
+    ) {
       return NextResponse.json(
-        { error: 'Field "name" dan "price" wajib diisi' },
+        { error: 'Nama, harga, dan kategori wajib diisi' },
         { status: 400 }
       );
     }
 
     const pool = getPool();
     const [result] = await pool.query(
-      'UPDATE products SET name = ?, description = ?, price = ? WHERE id = ?',
-      [name, description || null, price, params.id]
+      'UPDATE products SET name = ?, description = ?, price = ?, category_id = ? WHERE id = ?',
+      [name, description || null, price, categoryId, params.id]
     );
 
     if (result.affectedRows === 0) {
       return NextResponse.json({ error: 'Produk tidak ditemukan' }, { status: 404 });
     }
 
-    return NextResponse.json({ id: Number(params.id), name, description, price });
+    return NextResponse.json({
+      id: Number(params.id),
+      name,
+      description,
+      price,
+      category_id: categoryId,
+    });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: error.message }, { status: 500 });

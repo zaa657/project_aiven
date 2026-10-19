@@ -33,6 +33,15 @@ schema.sql                      -> Skema tabel `products` dan `categories`
    mysql --host=<HOST> --port=<PORT> --user=<USER> --password=<PASSWORD> \
      --database=<DBNAME> --ssl-mode=REQUIRED < schema.sql
    ```
+   Jika database sudah memiliki tabel `products` dan `categories`, jalankan
+   migrasi berikut satu kali agar produk bisa menyimpan kategori:
+   ```sql
+   ALTER TABLE products
+     ADD COLUMN category_id INT NULL,
+     ADD CONSTRAINT fk_products_category
+       FOREIGN KEY (category_id) REFERENCES categories(id)
+       ON DELETE SET NULL;
+   ```
 
 ## 2. Setup Project Secara Lokal
 
@@ -97,7 +106,7 @@ Pastikan `.env.local` **tidak** ikut ter-commit (sudah otomatis diabaikan lewat 
 
 ## Fitur
 
-- **Create**: tambah produk baru lewat form (nama, deskripsi, harga)
+- **Create**: tambah produk baru lewat form (nama, deskripsi, harga, kategori)
 - **Read**: daftar semua produk otomatis dimuat saat halaman dibuka
 - **Update**: klik "Edit" pada baris produk untuk mengubah data
 - **Delete**: klik "Hapus" untuk menghapus produk (dengan konfirmasi)
