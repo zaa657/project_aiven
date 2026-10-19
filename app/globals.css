@@ -27,6 +27,26 @@ h1 {
   font-size: 14px;
 }
 
+.page-nav {
+  display: flex;
+  gap: 8px;
+  margin: -8px 0 24px;
+}
+
+.nav-link {
+  padding: 8px 12px;
+  border-radius: 6px;
+  color: #2563eb;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background: #dbeafe;
+}
+
 .card {
   background: #fff;
   border: 1px solid #e2e2e2;
@@ -54,6 +74,12 @@ h1 {
   border-radius: 6px;
   font-size: 14px;
   font-family: inherit;
+}
+
+.form-row input:focus,
+.form-row textarea:focus {
+  outline: 2px solid #93c5fd;
+  outline-offset: 1px;
 }
 
 .form-actions {

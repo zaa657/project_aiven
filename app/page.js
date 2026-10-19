@@ -94,6 +94,10 @@ export default function Home() {
     <main>
       <h1>CRUD Produk</h1>
       <p className="subtitle">Next.js + MySQL (Aiven)</p>
+      <nav className="page-nav" aria-label="Navigasi utama">
+        <a className="nav-link active" href="/">Produk</a>
+        <a className="nav-link" href="/categories">Kategori</a>
+      </nav>
 
       {error && <div className="error-box">{error}</div>}
 

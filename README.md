@@ -8,14 +8,17 @@ dengan database di Aiven.
 
 ```
 app/
+  api/categories/route.js       -> GET (list), POST (create)
+  api/categories/[id]/route.js  -> GET (detail), PUT (update), DELETE
   api/products/route.js         -> GET (list), POST (create)
   api/products/[id]/route.js    -> GET (detail), PUT (update), DELETE
-  page.js                       -> Halaman utama (tabel + form)
+  categories/page.js            -> CRUD kategori (tabel + form)
+  page.js                       -> CRUD produk (tabel + form)
   layout.js
   globals.css
 lib/
   db.js                         -> Koneksi pool MySQL (support SSL Aiven)
-schema.sql                      -> Skema tabel `products`
+schema.sql                      -> Skema tabel `products` dan `categories`
 .env.local.example              -> Contoh environment variables
 ```
 
@@ -63,7 +66,7 @@ Jalankan secara lokal:
 npm run dev
 ```
 
-Buka http://localhost:3000 — kamu akan melihat form tambah produk dan tabel daftar produk.
+Buka http://localhost:3000 untuk mengelola produk atau http://localhost:3000/categories untuk mengelola kategori.
 
 ## 3. Push ke GitHub
 
@@ -98,6 +101,7 @@ Pastikan `.env.local` **tidak** ikut ter-commit (sudah otomatis diabaikan lewat 
 - **Read**: daftar semua produk otomatis dimuat saat halaman dibuka
 - **Update**: klik "Edit" pada baris produk untuk mengubah data
 - **Delete**: klik "Hapus" untuk menghapus produk (dengan konfirmasi)
+- CRUD kategori tersedia di halaman `/categories` menggunakan tabel `categories`
 
 ## Catatan
 
